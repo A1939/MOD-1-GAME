@@ -44,19 +44,20 @@ class Vehicle {
     switch(this.orientation) {
         case "right":
             this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
-            this.x += VEHICLE_SPEED
+            this.x += VEHICLE_SPEED;
             break;
         case "left":
             this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
-            this.x -= VEHICLE_SPEED
+            this.x -= VEHICLE_SPEED;
             break;
         case "up":
             this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
-            this.y -= VEHICLE_SPEED
+            this.y -= VEHICLE_SPEED;
+            break;
         case "down":
             this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
-            this.y += VEHICLE_SPEED
-        
+            this.y += VEHICLE_SPEED;
+            break;
     }
     
  }
