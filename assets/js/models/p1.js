@@ -1,5 +1,5 @@
 class Player1 extends Vehicle {
-    constructor(ctx, x, y, color, orientation, newColor = "blue") {
+    constructor(ctx, x, y, color, orientation, newColor = "#0000ffbf") {
         super(ctx, x, y, color, orientation);
         this.color = newColor
     }

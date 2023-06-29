@@ -41,10 +41,10 @@ class Game {
 
     checkWin() {
         switch (3) {
-            case this.p1.win:
+            case this.p1.victories:
                 alert("P1 WINS")
                 this.stop();
-            case this.p2.win:
+            case this.p2.victories:
                 alert("P2 WINS")
                 this.stop();
         }
@@ -52,33 +52,9 @@ class Game {
 
     checkCollisions() {
         const p1 = this.p1, p2 = this.p2;
-        const trail = p1.trail.concat(p2.trail);
-        
-        const p2ColBorder = p2.x > this.canvas.width || p2.x < 0 || p2.y > this.canvas.height || p2.y < 0;
-        const p1ColBorder = p1.x > this.canvas.width || p1.x < 0 || p1.y > this.canvas.height || p1.y < 0;
-        const p1ColP2 = p1.x === p2.x && p1.y === p2.y
-        let p1ColTile = null, p2ColTile = null;
-
-        trail.forEach(tile => {
-            const p1ColX = p1.x === tile.x;
-            const p1ColY = p1.y === tile.y;
-            const p2ColX = p2.x === tile.x;
-            const p2ColY = p2.y === tile.y;
-
-            if (p1ColX && p1ColY) {
-                p1ColTile = true
-            }
-            if (p2ColX && p2ColY) {
-                p2ColTile = true
-            }
-        })
-
-        const p1Col = p1ColBorder || p1ColTile;
-        const p2Col = p2ColBorder || p2ColTile;
-
+       
         switch (true) {
-            case p1Col && p2Col:
-            case p1ColP2:
+            case p1.colidesWith(p2) && p2.colidesWith(p1):
                 
                 p1.x = 0;
                 p1.y = 375;
@@ -92,7 +68,7 @@ class Game {
                 
                 break;
             
-            case p1Col:
+            case p1.colidesWith(p2):
                 
                 p1.x = 0;
                 p1.y = 375;
@@ -104,11 +80,11 @@ class Game {
                 p2.trail.length = 0;
                 p2.orientation = "left";
                 
-                p2.win++;
+                p2.victories++;
 
                 break;
             
-            case p2Col:
+            case p2.colidesWith(p1):
                 
                 p1.x = 0;
                 p1.y = 375;
@@ -120,7 +96,7 @@ class Game {
                 p2.trail.length = 0;
                 p2.orientation = "left";
 
-                p1.win++;
+                p1.victories++;
 
                 break;
         }
