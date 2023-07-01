@@ -27,12 +27,7 @@ class Player2 extends Vehicle {
                 }
                 break;
             case KEY_TURBO_P2:
-                if (!this.turbo) {
-                    this.turbo = true;
-                    setTimeout(() => {
-                        this.turbo = false;
-                    }, 500)
-                }
+                this.useTurbo();
                 break;
         }
     }

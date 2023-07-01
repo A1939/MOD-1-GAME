@@ -1,5 +1,5 @@
 class Vehicle {
-    constructor(ctx, x, y, color = "black", orientation) {
+    constructor(ctx, x, y, color = "white", orientation) {
         this.x = x;
         this.y = y;
         this.whidth = 15;
@@ -7,14 +7,23 @@ class Vehicle {
         this.color = color;
 
         this.trail = [];
-        this.turbo = null;
+        this.turbo = false;
         this.orientation = orientation;
         this.victories = 0;
 
         this.ctx = ctx;
     }
+    
+    useTurbo() {
+        if (!this.turbo) {
+            this.turbo = true;
+            setTimeout(() => {
+                this.turbo = false;
+            }, 500)
+        }
+    }
 
-    colidesWith (vehicle) {
+    colidesWith(vehicle) {
         const trails = this.trail.concat(vehicle.trail)
 
         if (this.x === vehicle.x && this.y === vehicle.y) {
