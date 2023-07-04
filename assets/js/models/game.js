@@ -6,7 +6,7 @@ class Game {
 
         this.background = new Background(this.ctx)
         this.p1 = new Player1(this.ctx, 0, 375, null, "right")
-        this.p2 = new Cpu(this.ctx, 1500 - 15, 375, null, "up") // new Player2
+        this.p2 = new Cpu(this.ctx, 1500 - 15, 375, null, "left") // new Player2
         this.drawIntervalId = null;
 
         this.tick = 0;
@@ -32,7 +32,7 @@ class Game {
                     this.tick = 0
                 }
                 this.tick++;
-            }, 1000 / 15)
+            }, 1000 / 30)
         }
     }
 
@@ -66,7 +66,6 @@ class Game {
                 p2.turbo = false
                 
                 break;
-            
             case p1.colidesWith(p2):
                 
                 p1.x = 0;
@@ -84,9 +83,7 @@ class Game {
                 p2.victories++;
                 
                 break;
-            
             case p2.colidesWith(p1):
-                console.log("o: ", p2.orientation, " x: ", p2.x, " y: ", p2.y)
                 p1.x = 0;
                 p1.y = 375;
                 p1.trail.length = 0;
@@ -100,7 +97,7 @@ class Game {
                 p2.turbo = false
 
                 p1.victories++;
-                this.stop();
+                
                 break;
         }
     }
@@ -120,9 +117,7 @@ class Game {
         }
         
         if (this.tick % 3 === 0 || this.p2.turbo) {
-            console.log(" ANTES:  "," ORIENTATION:  ", this.p2.orientation, " X: ", this.p2.x, " Y: ", this.p2.y);
             this.p2.behave(this.p1);
-            console.log(" DESPUES:  "," ORIENTATION:  ", this.p2.orientation, " X: ", this.p2.x, " Y: ", this.p2.y);
             this.p2.move();
         }
     }

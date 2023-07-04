@@ -3,7 +3,6 @@ class Cpu extends Vehicle {
         super (ctx, x, y, color = "white", orientation);
         this.obstacles = {};
         this.obstacles.target = {};
-        this.turbo = true
     }
     
     
@@ -23,7 +22,7 @@ class Cpu extends Vehicle {
     behave(adversary) {
         this.lookAll(adversary);
         
-        const target = this.obstacles.target
+        const target = this.obstacles.target;
         
 
         if (target.x.distance > target.y.distance) {
@@ -45,7 +44,7 @@ class Cpu extends Vehicle {
     }
 
     lookDown(element) {
-        return element.y >= this.y;
+        return element.y >= this.y;  // ERROR WITHOUT EQUAL
     }
 
     lookRight(element) {
@@ -53,14 +52,14 @@ class Cpu extends Vehicle {
     }
 
     lookLeft(element) {
-        return element.x <= this.x;
+        return element.x < this.x;
     }
 
 
 
     findClosestUp(elements) {
         const upElements = elements.map(element => {return element});
-        const upElementsSorted = upElements.filter(element => this.lookUp(element)).filter(element => element.x === this.x).sort((a, b) => a.y - b.y);
+        const upElementsSorted = upElements.filter(element => this.lookUp(element)).filter(element => element.x === this.x).sort((a, b) => b.y - a.y);
         const closestObject = {position: "up", distance: this.y};
 
         if (upElementsSorted.length !== 0) {
@@ -72,7 +71,7 @@ class Cpu extends Vehicle {
 
     findClosestDown(elements) {
         const downElements = elements.map(element => {return element});
-        const downElementsSorted = downElements.filter(element => this.lookDown(element)).filter(element => element.x === this.x).sort((a, b) => b.y - a.y);
+        const downElementsSorted = downElements.filter(element => this.lookDown(element)).filter(element => element.x === this.x).sort((a, b) => a.y - b.y);
         const closestObject = {position: "down", distance: 750 - this.y};
 
         if (downElementsSorted.length !== 0) {
@@ -86,31 +85,31 @@ class Cpu extends Vehicle {
         const rightElements = elements.map(element => {return element});
         const rightElementsSorted = rightElements.filter(element => this.lookRight(element)).filter(element => element.y === this.y).sort((a, b) => a.x - b.x);
         const closestObject = {position: "right", distance: 1500 - this.x};
-        
+
         if (rightElementsSorted.length !== 0) {
             closestObject.distance = rightElementsSorted[0].x - this.x;
         }
-        
+
         return closestObject;
     }
 
     findClosestLeft(elements) {
         const leftElements = elements.map(element => {return element});
-        const leftElementsSorted = leftElements.filter(element => this.lookLeft(element)).filter(element => element.y === this.y).sort((a, b) => a.x - b.x);
+        const leftElementsSorted = leftElements.filter(element => this.lookLeft(element)).filter(element => element.y === this.y).sort((a, b) => b.x - a.x);
         const closestObject = {position: "left", distance: this.x};
         
         if (leftElementsSorted.length !== 0) {
             closestObject.distance = this.x - leftElementsSorted[0].x;
         }
-
+        
         return closestObject;
     }
 
 
 
     lookAll(vehicle) {
-        const objects = this.trail.concat(vehicle.trail) // .push({x: vehicle.x, y: vehicle.y});
-        objects.push({x: vehicle.x, y: vehicle.y})
+        const objects = this.trail.concat(vehicle.trail);
+        objects.push({x: vehicle.x, y: vehicle.y});
         const closestObjects = [this.findClosestUp(objects), this.findClosestDown(objects), this.findClosestRight(objects), this.findClosestLeft(objects)];
         const closestObjectsSorted = closestObjects.sort((a, b) => a.distance - b.distance);
 
@@ -131,23 +130,12 @@ class Cpu extends Vehicle {
         if (this.lookLeft(vehicle)) {
             this.obstacles.target.x = {position: "left", distance: this.x - vehicle.x};
         }
-        
-        /* switch (true) {
-            case this.lookUp(vehicle):
-                this.obstacles.target.y = {position: "up", distance: this.y - vehicle.y};
-            case this.lookDown(vehicle):
-                this.obstacles.target.y = {position: "down", distance: vehicle.y - this.y};
-            case this.lookRight(vehicle):
-                this.obstacles.target.x = {position: "right", distance: vehicle.x - this.x};
-            case this.lookLeft(vehicle):
-                this.obstacles.target.x = {position: "left", distance: this.x - vehicle.x};
-        } */
-        // MIGHT NEED BREAKS
     }
 
     foreseeCollision() {
-        console.log(this.obstacles.visible)
-        if (this.obstacles.visible.some(point => { return point.distance > 15 && this.orientation === point.position})) {
+        const forseenCollisions = this.obstacles.visible.filter(element => element.position === this.orientation);
+        
+        if (forseenCollisions[0].distance <= 15) {
             return true;
         }
         return false;
@@ -155,18 +143,38 @@ class Cpu extends Vehicle {
     
     avoidObstacle() {
         if (this.foreseeCollision()) {
-            switch (this.orientation) {
+            switch (this.lastOrientantion) {
                 case "up":
-                    this.orientation = this.obstacles.visible[3].position;
+                    if (this.obstacles.visible[3].position !== "down") {
+                        this.orientation = this.obstacles.visible[3].position;
+                    } else {
+                        this.orientation = this.obstacles.visible[2].position;
+                    
+                    }
                     break;
                 case "down":
-                    this.orientation = this.obstacles.visible[3].position;
+                    if (this.obstacles.visible[3].position !== "up") {
+                        this.orientation = this.obstacles.visible[3].position;
+                    } else {
+                        this.orientation = this.obstacles.visible[2].position;
+                    
+                    }
                     break;
                 case "right":
-                    this.orientation = this.obstacles.visible[3].position;
+                    if (this.obstacles.visible[3].position !== "left") {
+                        this.orientation = this.obstacles.visible[3].position;
+                    } else {
+                        this.orientation = this.obstacles.visible[2].position;
+                    
+                    }
                     break;
                 case "left":
-                    this.orientation = this.obstacles.visible[3].position;
+                    if (this.obstacles.visible[3].position !== "right") {
+                        this.orientation = this.obstacles.visible[3].position;
+                    } else {
+                        this.orientation = this.obstacles.visible[2].position;
+                    
+                    }
                     break;
             }
         }

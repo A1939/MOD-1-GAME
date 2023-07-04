@@ -9,6 +9,7 @@ class Vehicle {
         this.trail = [];
         this.turbo = false;
         this.orientation = orientation;
+        this.lastOrientantion = orientation;
         this.victories = 0;
 
         this.ctx = ctx;
@@ -81,5 +82,6 @@ class Vehicle {
                 break;
         }
     
+        this.lastOrientantion = this.orientation
     }
 }
