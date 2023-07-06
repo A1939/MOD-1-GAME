@@ -7,6 +7,7 @@ class Background {
         
         this.sprite = new Image();
         this.sprite.src = "/assets/img/Bg.png";
+        
         this.sprite.onload = () => {
             this.sprite.isReady = true;
         }

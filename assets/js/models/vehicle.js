@@ -2,8 +2,8 @@ class Vehicle {
     constructor(ctx, x, y, color = "white", orientation) {
         this.x = x;
         this.y = y;
-        this.whidth = 15;
-        this.height = 10;
+        this.whidth = 25;
+        this.height = 25;
         this.color = color;
 
         this.trail = [];
@@ -11,6 +11,19 @@ class Vehicle {
         this.orientation = orientation;
         this.lastOrientantion = orientation;
         this.victories = 0;
+
+        this.sprite = new Image();
+        this.sprite.src = "/assets/img/BaseSpaceShip.png";
+        this.sprite.verticalFrames = 1;
+        this.sprite.verticalFrameIndex = 0;
+        this.sprite.horizontalFrames = 4;
+        this.sprite.horizontalFrameIndex = 0;
+        
+        this.sprite.onload = () => {
+            this.sprite.isReady = true;
+            this.sprite.frameWidth = 25;
+            this.sprite.frameHeight = 25;
+        }
 
         this.ctx = ctx;
     }
@@ -35,43 +48,53 @@ class Vehicle {
             return true;
         }
     }
-
+    
     draw() {
         this.ctx.save();
         this.ctx.fillStyle = this.color;
     
-        switch (this.orientation) {
-            case "right":
-                this.ctx.fillRect(this.x, this.y + 2.5,this.whidth, this.height);
-                break;
-            case "left":
-                this.ctx.fillRect(this.x, this.y + 2.5,this.whidth, this.height);
-                break;
-            case "up":
-                this.ctx.fillRect(this.x + 2.5, this.y,this.height, this.whidth);
-                break;
-            case "down":
-                this.ctx.fillRect(this.x + 2.5, this.y,this.height, this.whidth);
-                break;
-        }
-    
         this.trail.forEach(tile => {
             tile.draw();
         })
-    
+        
         this.ctx.restore();
-    }
 
-    move() {
-        switch(this.orientation) {
+        if (this.sprite.isReady) {
+            this.orientateSprite()
+            
+            this.ctx.drawImage(
+                this.sprite,
+                this.sprite.horizontalFrameIndex * this.sprite.frameWidth,
+                this.sprite.verticalFrameIndex * this.sprite.frameHeight,
+                this.sprite.frameWidth,
+                this.sprite.frameHeight,
+                this.x - 5,
+                this.y - 5,
+                this.whidth,
+                this.height
+            )
+        }
+    }
+    
+    orientateSprite() {
+        switch (this.orientation) {
+            case "up":
+                this.sprite.horizontalFrameIndex = 0;
+                break;
+            case "down":
+                this.sprite.horizontalFrameIndex = 1;
+                break;
             case "right":
-                this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
-                this.x += VEHICLE_SPEED;
+                this.sprite.horizontalFrameIndex = 2;
                 break;
             case "left":
-                this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
-                this.x -= VEHICLE_SPEED;
+                this.sprite.horizontalFrameIndex = 3;
                 break;
+        }
+    }
+        
+    move() {
+        switch(this.orientation) {
             case "up":
                 this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
                 this.y -= VEHICLE_SPEED;
@@ -79,6 +102,14 @@ class Vehicle {
             case "down":
                 this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
                 this.y += VEHICLE_SPEED;
+                break;
+            case "right":
+                this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
+                this.x += VEHICLE_SPEED;
+                break;
+            case "left":
+                this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
+                this.x -= VEHICLE_SPEED;
                 break;
         }
     
