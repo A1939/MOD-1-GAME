@@ -49,57 +49,38 @@ class Game {
         }
     }
 
+    lowReset() {
+        const p1 = this.p1, p2 = this.p2;
+
+        p1.x = 0;
+        p1.y = 375;
+        p1.trail.length = 0;
+        p1.orientation = "right"
+        p1.turbo = false;
+        p1.fuell = 1;
+
+        p2.x = 1500 - 15;
+        p2.y = 375;
+        p2.trail.length = 0;
+        p2.orientation = "left";
+        p2.turbo = false;
+        p2.fuel = 1;
+    }
+
     checkCollisions() {
         const p1 = this.p1, p2 = this.p2;
         
         switch (true) {
             case p1.colidesWith(p2) && p2.colidesWith(p1):
-                
-                p1.x = 0;
-                p1.y = 375;
-                p1.trail.length = 0;
-                p1.orientation = "right"
-                p1.turbo = false
-                
-                p2.x = 1500 - 15;
-                p2.y = 375;
-                p2.trail.length = 0;
-                p2.orientation = "left";
-                p2.turbo = false
-                
+                this.lowReset();
                 break;
             case p1.colidesWith(p2):
-                
-                p1.x = 0;
-                p1.y = 375;
-                p1.trail.length = 0;
-                p1.orientation = "right"
-                p1.turbo = false
-                
-                p2.x = 1500 - 15;
-                p2.y = 375;
-                p2.trail.length = 0;
-                p2.orientation = "left";
-                p2.turbo = false
-                
+                this.lowReset();
                 p2.victories++;
-                
                 break;
             case p2.colidesWith(p1):
-                p1.x = 0;
-                p1.y = 375;
-                p1.trail.length = 0;
-                p1.orientation = "right"
-                p1.turbo = false
-                
-                p2.x = 1500 - 15;
-                p2.y = 375;
-                p2.trail.length = 0;
-                p2.orientation = "left";
-                p2.turbo = false
-
+                this.lowReset();
                 p1.victories++;
-                
                 break;
         }
     }
