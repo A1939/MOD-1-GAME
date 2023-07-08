@@ -7,22 +7,22 @@ class Player2 extends Vehicle {
     onKeyDown(event) {
         switch (event.keyCode) {
             case KEY_UP_P2:
-                if (this.orientation !== "down") {
+                if (this.validateOrientation("up")) {
                     this.orientation = "up";
                 }
                 break;
             case KEY_DOWN_P2:
-                if (this.orientation !== "up") {
+                if (this.validateOrientation("down")) {
                     this.orientation = "down";
                 }
                 break;
             case KEY_RIGHT_P2:
-                if (this.orientation !== "left") {
+                if (this.validateOrientation("right")) {
                     this.orientation = "right";
                 }
                 break;
             case KEY_LEFT_P2:
-                if (this.orientation !== "right") {
+                if (this.validateOrientation("left")) {
                     this.orientation = "left";
                 }
                 break;

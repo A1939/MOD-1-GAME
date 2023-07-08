@@ -28,8 +28,10 @@ class Game {
                 this.checkCollisions();
                 this.checkWin();
 
-                if (this.tick > 12) {
-                    this.tick = 0
+                if (this.tick > 120) {
+                    this.tick = 0;
+                    this.p1.adquireFuell();
+                    this.p2.adquireFuell();
                 }
                 this.tick++;
             }, 1000 / 30)

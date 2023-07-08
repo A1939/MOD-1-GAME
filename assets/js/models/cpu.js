@@ -10,7 +10,7 @@ class Cpu extends Vehicle {
     
     Allways:
     Track closest obstacles in each direction and the other vehicle.
-    Use turbo when close to the other vehicle
+    Try to use turbo when close to the other vehicle.
     
     By Priority:
     1- Avoid inmediate collisions.
@@ -21,24 +21,36 @@ class Cpu extends Vehicle {
     
     behave(adversary) {
         this.lookAll(adversary);
-        
-        const target = this.obstacles.target;
-        
-
-        if (target.x.distance > target.y.distance) {
-            this.orientation = target.x.position;
-        }
-        else {
-            this.orientation = target.y.position;
-        }
+        this.track();
         this.avoidObstacle();
         
-        if (target.x.distance < 105 && target.y.distance < 105) {
+        if (this.obstacles.target.x.distance < 105 && this.obstacles.target.y.distance < 105) {
             this.useTurbo();
         }
     }
 
-    
+    track() {
+        const x = this.obstacles.target.x, y = this.obstacles.target.y;
+        let notTracking;
+        
+        switch (true) {
+            case !this.validateOrientation(y.position):
+            case x.distance >= y.distance && this.validateOrientation(x.position):
+                this.orientation = x.position;
+                notTracking = y.position;
+                break;
+            case !this.validateOrientation(x.position):
+            case y.distance >= x.distance && this.validateOrientation(y.position):
+                this.orientation = y.position;
+                notTracking = x.position;
+                break;
+        }
+        
+        if (this.avoidObstacle() && this.validateOrientation(notTracking)) {
+            this.orientation = notTracking;
+        }
+    }
+
     lookUp(element) {
         return element.y < this.y;
     }
@@ -143,41 +155,12 @@ class Cpu extends Vehicle {
     
     avoidObstacle() {
         if (this.foreseeCollision()) {
-            switch (this.lastOrientantion) {
-                case "up":
-                    if (this.obstacles.visible[3].position !== "down") {
-                        this.orientation = this.obstacles.visible[3].position;
-                    } else {
-                        this.orientation = this.obstacles.visible[2].position;
-                    
-                    }
-                    break;
-                case "down":
-                    if (this.obstacles.visible[3].position !== "up") {
-                        this.orientation = this.obstacles.visible[3].position;
-                    } else {
-                        this.orientation = this.obstacles.visible[2].position;
-                    
-                    }
-                    break;
-                case "right":
-                    if (this.obstacles.visible[3].position !== "left") {
-                        this.orientation = this.obstacles.visible[3].position;
-                    } else {
-                        this.orientation = this.obstacles.visible[2].position;
-                    
-                    }
-                    break;
-                case "left":
-                    if (this.obstacles.visible[3].position !== "right") {
-                        this.orientation = this.obstacles.visible[3].position;
-                    } else {
-                        this.orientation = this.obstacles.visible[2].position;
-                    
-                    }
-                    break;
+            if (this.validateOrientation(this.obstacles.visible[3].position)) {
+                this.orientation = this.obstacles.visible[3].position;
+            } else {
+                this.orientation = this.obstacles.visible[2].position;
             }
+            return true;
         }
     }
-
 }

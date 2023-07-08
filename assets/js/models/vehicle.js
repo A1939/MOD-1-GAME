@@ -8,6 +8,7 @@ class Vehicle {
 
         this.trail = [];
         this.turbo = false;
+        this.fuel = 1;
         this.orientation = orientation;
         this.lastOrientantion = orientation;
         this.victories = 0;
@@ -27,13 +28,45 @@ class Vehicle {
 
         this.ctx = ctx;
     }
+
+    validateOrientation(orientation) {
+        switch (this.lastOrientantion) {
+            case "up":
+                if (orientation !== "down") {
+                    return true;
+                }
+                break;
+            case "down":
+                if (orientation !== "up") {
+                    return true;
+                }
+                break;
+            case "right":
+                if (orientation !== "left") {
+                    return true;
+                }
+                break;
+            case "left":
+                if (orientation !== "right") {
+                    return true;
+                }
+                break;
+        }
+    }
+
+    adquireFuell() {
+        if (this.fuel < 4) {
+            this.fuel++;
+        }
+    }
     
     useTurbo() {
-        if (!this.turbo) {
+        if (!this.turbo && this.fuel !== 0) {
             this.turbo = true;
             setTimeout(() => {
                 this.turbo = false;
             }, 500)
+            this.fuel--;
         }
     }
 
@@ -53,9 +86,7 @@ class Vehicle {
         this.ctx.save();
         this.ctx.fillStyle = this.color;
     
-        this.trail.forEach(tile => {
-            tile.draw();
-        })
+        this.trail.forEach(tile => tile.draw())
         
         this.ctx.restore();
 
