@@ -1,7 +1,12 @@
 class Player2 extends Vehicle {
-    constructor(ctx, x, y, color, orientation, newColor = "#ff0000bf") {
-        super(ctx, x, y, color, orientation);
-        this.color = newColor
+    constructor(ctx, x, y, color, orientation, side) {
+        super(ctx, x, y, color, orientation, side);
+        this.player = true;
+        this.sprite.src = "/assets/img/BaseSpaceShipOrange.png";
+    }
+
+    addTile() {
+        this.trail.push(new OrangeTile(this.ctx, this.x, this.y, this.orientation));
     }
 
     onKeyDown(event) {

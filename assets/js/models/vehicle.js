@@ -1,20 +1,23 @@
 class Vehicle {
-    constructor(ctx, x, y, color = "white", orientation) {
+    constructor(ctx, x, y, color = "white", orientation, side) {
         this.x = x;
         this.y = y;
         this.whidth = 25;
         this.height = 25;
         this.color = color;
 
+        this.fuelMeter = new TurboGauge(ctx, side)
+
         this.trail = [];
         this.turbo = false;
-        this.fuel = 1;
+        this.fuel = 2;
+        this.side = side;
         this.orientation = orientation;
         this.lastOrientantion = orientation;
         this.victories = 0;
 
         this.sprite = new Image();
-        this.sprite.src = "/assets/img/BaseSpaceShip.png";
+        this.sprite.src = "/assets/img/BaseSpaceShipGray.png";
         this.sprite.verticalFrames = 1;
         this.sprite.verticalFrameIndex = 0;
         this.sprite.horizontalFrames = 4;
@@ -55,7 +58,7 @@ class Vehicle {
     }
 
     adquireFuell() {
-        if (this.fuel < 4) {
+        if (this.fuel < 5) {
             this.fuel++;
         }
     }
@@ -81,14 +84,13 @@ class Vehicle {
             return true;
         }
     }
+
+    drawFuel() {
+        this.fuelMeter.draw(this.fuel);
+    }
     
     draw() {
-        this.ctx.save();
-        this.ctx.fillStyle = this.color;
-    
         this.trail.forEach(tile => tile.draw())
-        
-        this.ctx.restore();
 
         if (this.sprite.isReady) {
             this.orientateSprite()
@@ -123,23 +125,27 @@ class Vehicle {
                 break;
         }
     }
-        
+    
+    addTile() {
+        this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
+    }
+
     move() {
         switch(this.orientation) {
             case "up":
-                this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
+                this.addTile();
                 this.y -= VEHICLE_SPEED;
                 break;
             case "down":
-                this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
+                this.addTile();
                 this.y += VEHICLE_SPEED;
                 break;
             case "right":
-                this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
+                this.addTile();
                 this.x += VEHICLE_SPEED;
                 break;
             case "left":
-                this.trail.push(new Tile(this.ctx, this.x, this.y, this.orientation));
+                this.addTile();
                 this.x -= VEHICLE_SPEED;
                 break;
         }

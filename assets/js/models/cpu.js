@@ -1,8 +1,9 @@
 class Cpu extends Vehicle {
-    constructor (ctx, x, y, color = "white", orientation) {
-        super (ctx, x, y, color = "white", orientation);
+    constructor (ctx, x, y, color = "white", orientation, side) {
+        super (ctx, x, y, color = "white", orientation, side);
         this.obstacles = {};
         this.obstacles.target = {};
+        this.player = false
     }
     
     

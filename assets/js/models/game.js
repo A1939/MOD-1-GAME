@@ -5,21 +5,30 @@ class Game {
         this.ctx = this.canvas.getContext("2d");
 
         this.background = new Background(this.ctx)
-        this.p1 = new Player1(this.ctx, 0, 375, null, "right")
-        this.p2 = new Cpu(this.ctx, 1500 - 15, 375, null, "left") // new Player2
+        
+        this.p1 = new Cpu(this.ctx, Math.floor(Math.random() * 50) * 15, Math.floor(Math.random() * 49) * 15, null, "right", "left");
+        this.p2 = new Cpu(this.ctx, (50 + Math.floor(Math.random() * 49)) * 15, Math.floor(Math.random() * 49) * 15, null, "left", "right");
+        
         this.drawIntervalId = null;
+
+        this.audio = new Audio("/assets/audio/Wound of The Cosmos [8-bit Music to Escape A Space Station to].mp3");
+        this.audio.volume = 0.05;
 
         this.tick = 0;
     }
 
     onKeyDown(event) {
-        this.p1.onKeyDown(event);
-        // this.p2.onKeyDown(event);
+        if (this.p1.player) {
+            this.p1.onKeyDown(event);
+        }
+        if (this.p2.player) {
+            this.p2.onKeyDown(event);
+        }
     }
     
     start() {
         if (!this.drawIntervalId) {
-            
+            this.audio.play();
             this.drawIntervalId = setInterval(() => {
                 
                 this.clear();
@@ -28,7 +37,7 @@ class Game {
                 this.checkCollisions();
                 this.checkWin();
 
-                if (this.tick > 120) {
+                if (this.tick > 90) {
                     this.tick = 0;
                     this.p1.adquireFuell();
                     this.p2.adquireFuell();
@@ -41,10 +50,10 @@ class Game {
     checkWin() {
         switch (3) {
             case this.p1.victories:
-                alert("P1 WINS")
+                scoreBoard.innerHTML = `P1 WINS`
                 this.stop();
             case this.p2.victories:
-                alert("P2 WINS")
+                scoreBoard.innerHTML = `P2 WINS`
                 this.stop();
         }
     }
@@ -52,19 +61,21 @@ class Game {
     lowReset() {
         const p1 = this.p1, p2 = this.p2;
 
-        p1.x = 0;
-        p1.y = 375;
+        p1.x = Math.floor(Math.random() * 50) * 15
+        p1.y = Math.floor(Math.random() * 49) * 15;
         p1.trail.length = 0;
         p1.orientation = "right"
         p1.turbo = false;
-        p1.fuell = 1;
+        p1.fuel = 2;
 
-        p2.x = 1500 - 15;
-        p2.y = 375;
+        p2.x = (50 + Math.floor(Math.random() * 50)) * 15 - 15
+        p2.y = Math.floor(Math.random() * 49) * 15;
         p2.trail.length = 0;
         p2.orientation = "left";
         p2.turbo = false;
-        p2.fuel = 1;
+        p2.fuel = 2;
+
+        this.tick = 0
     }
 
     checkCollisions() {
@@ -83,6 +94,8 @@ class Game {
                 p1.victories++;
                 break;
         }
+
+        scoreBoard.innerHTML = `${p1.victories} - ${p2.victories}`
     }
 
     stop() {
@@ -96,11 +109,16 @@ class Game {
     move() {
         
         if (this.tick % 3 === 0 || this.p1.turbo) {
+            if (!this.p1.player) {
+                this.p1.behave(this.p2);
+            }
             this.p1.move();
         }
         
         if (this.tick % 3 === 0 || this.p2.turbo) {
-            this.p2.behave(this.p1);
+            if (!this.p2.player) {
+                this.p2.behave(this.p1);
+            }
             this.p2.move();
         }
     }
@@ -109,5 +127,7 @@ class Game {
         this.background.draw();
         this.p1.draw();
         this.p2.draw();
+        this.p1.drawFuel();
+        this.p2.drawFuel();
     }
 }

@@ -6,7 +6,7 @@ class Tile {
         this.tick = 1;
 
         this.sprite = new Image();
-        this.sprite.src = "/assets/img/burning_loop_3_X_Y.png";
+        this.sprite.src = "/assets/img/burning_loop_Gray.png";
         
         this.sprite.onload = () => {
             this.sprite.isReady = true;
